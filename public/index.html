@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deadlock AI Tactical Assistant</title>
+    <style>
+        body { background: #0f0f12; color: #d1d1d1; font-family: monospace; display: flex; flex-direction: column; align-items: center; }
+        #chat { width: 400px; height: 500px; border: 1px solid #4a2d8a; padding: 10px; overflow-y: scroll; margin-bottom: 10px; }
+        input { background: #1a1a21; border: 1px solid #4a2d8a; color: white; padding: 10px; width: 300px; }
+        button { background: #4a2d8a; color: white; border: none; padding: 10px; cursor: pointer; }
+        .ai-typing { color: #8a2be2; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>DEADLOCK AI v1.0.4</h1>
+    <div id="chat"></div>
+    <div>
+        <input type="text" id="msg" placeholder="Введите ваш билд и героя противника...">
+        <button onclick="send()">АНАЛИЗ</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const chat = document.getElementById('chat');
+
+        function send() {
+            const text = document.getElementById('msg').value;
+            chat.innerHTML += `<p><b>Вы:</b> ${text}</p>`;
+            chat.innerHTML += `<p class="ai-typing" id="status">ИИ анализирует данные матча...</p>`;
+            socket.emit('user_question', { text: text });
+            document.getElementById('msg').value = '';
+        }
+
+        socket.on('answer_to_user', (data) => {
+            document.getElementById('status').remove();
+            chat.innerHTML += `<p style="color: #edcd47"><b>Tactical AI:</b> ${data.answer}</p>`;
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+    <title>Deadlock AI Tactical Assistant</title>
+    <style>
+        body { background: #0f0f12; color: #d1d1d1; font-family: monospace; display: flex; flex-direction: column; align-items: center; }
+        #chat { width: 400px; height: 500px; border: 1px solid #4a2d8a; padding: 10px; overflow-y: scroll; margin-bottom: 10px; }
+        input { background: #1a1a21; border: 1px solid #4a2d8a; color: white; padding: 10px; width: 300px; }
+        button { background: #4a2d8a; color: white; border: none; padding: 10px; cursor: pointer; }
+        .ai-typing { color: #8a2be2; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>DEADLOCK AI v1.0.4</h1>
+    <div id="chat"></div>
+    <div>
+        <input type="text" id="msg" placeholder="Введите ваш билд и героя противника...">
+        <button onclick="send()">АНАЛИЗ</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const chat = document.getElementById('chat');
+
+        function send() {
+            const text = document.getElementById('msg').value;
+            chat.innerHTML += `<p><b>Вы:</b> ${text}</p>`;
+            chat.innerHTML += `<p class="ai-typing" id="status">ИИ анализирует данные матча...</p>`;
+            socket.emit('user_question', { text: text });
+            document.getElementById('msg').value = '';
+        }
+
+        socket.on('answer_to_user', (data) => {
+            document.getElementById('status').remove();
+            chat.innerHTML += `<p style="color: #edcd47"><b>Tactical AI:</b> ${data.answer}</p>`;
+        });
+    </script>
+</body>
+</html>

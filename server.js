@@ -15,6 +15,15 @@ const pool = new Pool({
 });
 
 app.use(express.static('public')); // Разрешаем серверу показывать файлы из папки public
+// Этот код говорит: "Если кто-то заходит на корень сайта (/), отправь ему index.html"
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Добавь это для админки (чтобы заходить по адресу /admin)
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
 
 // Когда кто-то заходит на сайт
 io.on('connection', (socket) => {
