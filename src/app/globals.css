@@ -1,0 +1,246 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --neon-purple: #b44fff;
+  --neon-gold: #ffd700;
+  --neon-cyan: #00f5ff;
+  --dark-bg: #050810;
+  --dark-panel: #080d1a;
+  --dark-border: #1a1f35;
+  --text-primary: #e0e8ff;
+  --text-dim: #5a6a9a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  font-family: 'Share Tech Mono', monospace;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Scanline overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.05) 2px,
+    rgba(0, 0, 0, 0.05) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Animated grid background */
+.grid-bg {
+  background-image: 
+    linear-gradient(rgba(180, 79, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 79, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 40px; }
+}
+
+/* Glow effects */
+.neon-purple-glow {
+  text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple), 0 0 40px var(--neon-purple);
+}
+
+.neon-gold-glow {
+  text-shadow: 0 0 10px var(--neon-gold), 0 0 20px var(--neon-gold), 0 0 40px var(--neon-gold);
+}
+
+.box-glow-purple {
+  box-shadow: 0 0 15px rgba(180, 79, 255, 0.3), inset 0 0 15px rgba(180, 79, 255, 0.05);
+}
+
+.box-glow-gold {
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.05);
+}
+
+/* Typing cursor effect */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink::after {
+  content: '█';
+  color: var(--neon-purple);
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+}
+
+/* Pulse animation */
+@keyframes pulse-purple {
+  0%, 100% { 
+    box-shadow: 0 0 10px rgba(180, 79, 255, 0.5);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(180, 79, 255, 0.9), 0 0 60px rgba(180, 79, 255, 0.3);
+  }
+}
+
+.pulse-purple {
+  animation: pulse-purple 2s ease-in-out infinite;
+}
+
+/* Loading bar animation */
+@keyframes loadBar {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.load-bar {
+  animation: loadBar 2.5s ease-in-out forwards;
+}
+
+/* Flicker animation */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+
+.flicker {
+  animation: flicker 4s infinite;
+}
+
+/* Corner decorations */
+.corner-tl {
+  position: relative;
+}
+
+.corner-tl::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--neon-purple);
+  border-left: 2px solid var(--neon-purple);
+}
+
+.corner-tl::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 12px;
+  height: 12px;
+  border-bottom: 2px solid var(--neon-purple);
+  border-right: 2px solid var(--neon-purple);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--dark-panel);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--neon-purple);
+  border-radius: 2px;
+}
+
+/* Input styles */
+.deadlock-input {
+  background: rgba(8, 13, 26, 0.9);
+  border: 1px solid rgba(180, 79, 255, 0.3);
+  color: var(--text-primary);
+  font-family: 'Share Tech Mono', monospace;
+  transition: all 0.3s ease;
+}
+
+.deadlock-input:focus {
+  outline: none;
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 15px rgba(180, 79, 255, 0.3);
+}
+
+.deadlock-input::placeholder {
+  color: rgba(90, 106, 154, 0.5);
+}
+
+/* Button styles */
+.deadlock-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.deadlock-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.deadlock-btn:hover::before {
+  left: 100%;
+}
+
+/* Status badge */
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.status-pending {
+  animation: statusPulse 1.5s ease-in-out infinite;
+}
+
+/* Rotating hex */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.rotate-slow {
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotateReverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.rotate-reverse {
+  animation: rotateReverse 15s linear infinite;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
