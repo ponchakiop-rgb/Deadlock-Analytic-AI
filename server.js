@@ -8,51 +8,54 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Подключаем базу данных
+// Подключение к базе данных Render
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // Ссылку возьмем из настроек Render
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-app.use(express.static('public')); // Разрешаем серверу показывать файлы из папки public
-// Этот код говорит: "Если кто-то заходит на корень сайта (/), отправь ему index.html"
+// 1. Сначала отдаем статические файлы из папки public
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 2. Главная страница (Игрок)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Добавь это для админки (чтобы заходить по адресу /admin)
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+// 3. СЕКРЕТНАЯ АДМИНКА (Заходи именно по этому адресу!)
+// Адрес будет: твой-сайт.onrender.com/super-secret-admin-panel-983142
+app.get('/super-secret-admin-panel-983142', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// Когда кто-то заходит на сайт
+// Логика чата
 io.on('connection', (socket) => {
-  console.log('Кто-то подключился');
+  console.log('User connected');
 
-  // Когда пользователь присылает вопрос
   socket.on('user_question', async (data) => {
-    // Сохраняем вопрос в базу
-    const res = await pool.query(
-      'INSERT INTO tickets (question, status) VALUES ($1, $2) RETURNING id',
-      [data.text, 'pending']
-    );
-    
-    const ticketId = res.rows[0].id;
-
-    // Отправляем админам уведомление о новом вопросе
-    io.emit('new_ticket', { id: ticketId, text: data.text });
+    try {
+      const res = await pool.query(
+        'INSERT INTO tickets (question, status) VALUES ($1, $2) RETURNING id',
+        [data.text, 'pending']
+      );
+      io.emit('new_ticket', { id: res.rows[0].id, text: data.text });
+    } catch (err) {
+      console.error('Database Error:', err);
+    }
   });
 
-  // Когда админ отвечает
   socket.on('admin_answer', async (data) => {
-    // Обновляем запись в базе
-    await pool.query('UPDATE tickets SET answer = $1, status = $2 WHERE id = $3', 
-    [data.answer, 'completed', data.ticketId]);
-
-    // Отправляем ответ обратно игроку
-    io.emit('answer_to_user', { ticketId: data.ticketId, answer: data.answer });
+    try {
+      await pool.query('UPDATE tickets SET answer = $1, status = $2 WHERE id = $3', 
+      [data.answer, 'completed', data.ticketId]);
+      io.emit('answer_to_user', { ticketId: data.ticketId, answer: data.answer });
+    } catch (err) {
+      console.error('Database Error:', err);
+    }
   });
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
